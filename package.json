@@ -1,6 +1,6 @@
 {
   "name": "contentjet-s3",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "AWS S3 storage backend for Contentjet",
   "repository": {
     "type": "git",
