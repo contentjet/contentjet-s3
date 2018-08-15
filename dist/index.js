@@ -1,21 +1,34 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
+const path = __importStar(require("path"));
 const S3 = require("aws-sdk/clients/s3");
-const env_1 = require("./utils/env");
+const lodash_1 = require("lodash");
+exports.getEnv = (name, required = false) => {
+    const value = lodash_1.get(process.env, name);
+    if (!value && required)
+        throw new Error(`Missing environment variable. ${name} must be set`);
+    return value;
+};
 class S3StorageBackend {
     constructor() {
         this.s3 = new S3({
-            accessKeyId: env_1.getEnv('AWS_ACCESS_KEY_ID', true),
-            secretAccessKey: env_1.getEnv('AWS_SECRET_ACCESS_KEY', true),
-            region: env_1.getEnv('AWS_REGION', true)
+            accessKeyId: exports.getEnv('AWS_ACCESS_KEY_ID', true),
+            secretAccessKey: exports.getEnv('AWS_SECRET_ACCESS_KEY', true),
+            region: exports.getEnv('AWS_REGION', true)
         });
         this.put = this.put.bind(this);
         this.generateKey = this.generateKey.bind(this);
-        this.AWS_S3_BUCKET = env_1.getEnv('AWS_S3_BUCKET', true);
-        this.AWS_S3_STORAGE_CLASS = env_1.getEnv('AWS_S3_STORAGE_CLASS') || 'STANDARD';
-        this.AWS_S3_CACHE_CONTROL = env_1.getEnv('AWS_S3_CACHE_CONTROL') || 'max-age=604800';
-        this.AWS_S3_KEY_PREFIX = env_1.getEnv('AWS_S3_KEY_PREFIX') || '';
+        this.AWS_S3_BUCKET = exports.getEnv('AWS_S3_BUCKET', true);
+        this.AWS_S3_STORAGE_CLASS = exports.getEnv('AWS_S3_STORAGE_CLASS') || 'STANDARD';
+        this.AWS_S3_CACHE_CONTROL = exports.getEnv('AWS_S3_CACHE_CONTROL') || 'max-age=604800';
+        this.AWS_S3_KEY_PREFIX = exports.getEnv('AWS_S3_KEY_PREFIX') || '';
     }
     async put(key, buffer) {
         return new Promise((resolve, reject) => {

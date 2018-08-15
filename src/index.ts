@@ -1,7 +1,33 @@
 import * as path from 'path';
 import S3 = require('aws-sdk/clients/s3');
-import { getEnv } from './utils/env';
-import { IFile, IStorageBackend, IStorageResponse } from '../types';
+import { get } from 'lodash';
+
+export interface IFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+  thumbnailBuffer: Buffer | undefined;
+  width: number | undefined;
+  height: number | undefined;
+}
+
+export interface IStorageResponse {
+  filePath: string;
+  thumbnailPath?: string;
+}
+
+export interface IStorageBackend {
+  write(projectId: number, file: IFile): Promise<IStorageResponse>;
+}
+
+export const getEnv = (name: string, required: boolean = false): string => {
+  const value = get(process.env, name) as string;
+  if (!value && required) throw new Error(`Missing environment variable. ${name} must be set`);
+  return value;
+};
 
 class S3StorageBackend implements IStorageBackend {
 
