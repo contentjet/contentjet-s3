@@ -29,7 +29,7 @@ export const getEnv = (name: string, required: boolean = false): string => {
   return value;
 };
 
-class S3StorageBackend implements IStorageBackend {
+export default class S3StorageBackend implements IStorageBackend {
 
   s3: S3;
   AWS_S3_BUCKET: string;
@@ -93,5 +93,3 @@ class S3StorageBackend implements IStorageBackend {
   }
 
 }
-
-module.exports = S3StorageBackend;

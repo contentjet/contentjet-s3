@@ -71,4 +71,4 @@ class S3StorageBackend {
         };
     }
 }
-module.exports = S3StorageBackend;
+exports.default = S3StorageBackend;
