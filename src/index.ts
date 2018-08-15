@@ -51,12 +51,13 @@ class S3StorageBackend implements IStorageBackend {
     this.AWS_S3_KEY_PREFIX = getEnv('AWS_S3_KEY_PREFIX') || '';
   }
 
-  async put(key: string, buffer: Buffer) {
+  async put(key: string, buffer: Buffer, mimetype: string) {
     return new Promise((resolve, reject) => {
       const params = {
         Bucket: this.AWS_S3_BUCKET,
         StorageClass: this.AWS_S3_STORAGE_CLASS,
         CacheControl: this.AWS_S3_CACHE_CONTROL,
+        ContentType: mimetype,
         Body: buffer,
         Key: key
       };
@@ -78,11 +79,11 @@ class S3StorageBackend implements IStorageBackend {
 
   async write(projectId: number, file: IFile): Promise<IStorageResponse> {
     const key = this.generateKey(projectId, file.originalname);
-    const puts = [this.put(key, file.buffer)];
+    const puts = [this.put(key, file.buffer, file.mimetype)];
     let thumbnailKey;
     if (file.thumbnailBuffer) {
       thumbnailKey = key.replace(/(\w+)(\.\w+)$/, '$1-thumb$2');
-      puts.push(this.put(key, file.thumbnailBuffer));
+      puts.push(this.put(thumbnailKey, file.thumbnailBuffer, file.mimetype));
     }
     await Promise.all(puts);
     return {
