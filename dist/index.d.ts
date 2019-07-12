@@ -26,7 +26,7 @@ export default class S3StorageBackend implements IStorageBackend {
     AWS_S3_CACHE_CONTROL: string;
     AWS_S3_KEY_PREFIX: string;
     constructor();
-    put(key: string, buffer: Buffer, mimetype: string): Promise<{}>;
+    put(key: string, buffer: Buffer, mimetype: string): Promise<unknown>;
     generateKey(projectId: number, name: string): string;
     write(projectId: number, file: IFile): Promise<IStorageResponse>;
 }

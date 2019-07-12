@@ -30,7 +30,6 @@ export const getEnv = (name: string, required: boolean = false): string => {
 };
 
 export default class S3StorageBackend implements IStorageBackend {
-
   s3: S3;
   AWS_S3_BUCKET: string;
   AWS_S3_STORAGE_CLASS: string;
@@ -65,7 +64,7 @@ export default class S3StorageBackend implements IStorageBackend {
         if (err) return reject(err);
         resolve(data);
       });
-    })
+    });
   }
 
   generateKey(projectId: number, name: string): string {
@@ -75,7 +74,7 @@ export default class S3StorageBackend implements IStorageBackend {
       `${projectId}/${now.getFullYear()}-${now.getMonth() + 1}/`,
       `${now.getTime()}-${Math.floor(Math.random() * 1000000)}${path.extname(name)}`
     ].join('');
-  };
+  }
 
   async write(projectId: number, file: IFile): Promise<IStorageResponse> {
     const key = this.generateKey(projectId, file.originalname);
@@ -91,5 +90,4 @@ export default class S3StorageBackend implements IStorageBackend {
       thumbnailPath: thumbnailKey
     };
   }
-
 }
